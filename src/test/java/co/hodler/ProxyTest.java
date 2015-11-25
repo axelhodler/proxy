@@ -21,14 +21,13 @@ public class ProxyTest {
   public void withApacheHttpClient() throws Exception {
     CloseableHttpClient httpclient = HttpClients.createDefault();
     try {
-      HttpHost target = new HttpHost("www.google.de");
-      HttpHost proxy = new HttpHost("localhost", 8888);
-
-      RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-      HttpGet request = new HttpGet();
+      RequestConfig config = RequestConfig.custom()
+          .setProxy(new HttpHost("localhost", 8888))
+          .build();
+      HttpGet request = new HttpGet("http://www.google.de");
       request.setConfig(config);
 
-      CloseableHttpResponse response = httpclient.execute(target, request);
+      CloseableHttpResponse response = httpclient.execute(request);
       try {
         assertEquals(200, response.getStatusLine().getStatusCode());
         EntityUtils.consume(response.getEntity());
